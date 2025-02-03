@@ -78,10 +78,32 @@ public class Remanso extends JavaPlugin {
         return true; // Command processed successfully
     }
 
-    // Provide tab completion options for commands (currently not implemented)
+    // Provide tab completion options for commands
     public List<String> onTabComplete(CommandSender s, Command c, String l, String[] a) {
         List<String> tabComplete = new ArrayList<String>();
-        tabComplete.add("hi");
+
+        if (a.length == 0) {
+            tabComplete.add("help");
+            tabComplete.add("reload");
+            tabComplete.add("teleport");
+            tabComplete.add("teleport-location")
+            tabComplete.add("tool");
+            tabComplete.add("zone");
+        }
+
+        if (a.length == 1 && a[0].equals("teleport")) {
+            tabComplete.add("RETURN LIST OF ZONES");
+        }
+
+        if (a.length == 1 && a[0].equals("zone")) {
+            tabComplete.add("chunk");
+            tabComplete.add("create");
+            tabComplete.add("delete");
+            tabComplete.add("designate");
+            tabComplete.add("merge");
+            tabComplete.add("world");
+        }
+        
         return tabComplete;
     }
 }
