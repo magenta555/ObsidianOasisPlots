@@ -33,15 +33,15 @@ public class Remanso extends JavaPlugin {
     public boolean onCommand(CommandSender s, Command c, String l, String[] a) {
         // Check if no arguments were provided; display plugin version info
         if (a.length == 0) {
-            s.sendMessage("§dRemanso, version 0, created by magenta555");
-            s.sendMessage("§dLand zoning plugin for Minecraft servers!");
+            s.sendMessage("§d[Remanso] Remanso, version 0, created by magenta555");
+            s.sendMessage("§d[Remanso] Land zoning plugin for Minecraft servers!");
             return true; // Command processed successfully
         }
         
         // Reload the plugin's configuration if "reload" command is issued
         if (a[0].equals("reload")) {
             reloadConfig(); // Reloads the config.yml file from disk
-            s.sendMessage("§dReloaded Remanso config.yml");
+            s.sendMessage("§d[Remanso] Reloaded Remanso config.yml");
             return true; // Command processed successfully
         }
         
@@ -69,7 +69,7 @@ public class Remanso extends JavaPlugin {
             
             player.getInventory().addItem(itemStack); // Add the customized item to player's inventory
             
-            s.sendMessage("§dYou should now have a Zoning Tool!"); // Confirm action to sender
+            s.sendMessage("§d[Remanso] You should now have a Zoning Tool!"); // Confirm action to sender
         }
         
         return true; // Command processed successfully
@@ -79,7 +79,7 @@ public class Remanso extends JavaPlugin {
     public List<String> onTabComplete(CommandSender s, Command c, String l, String[] a) {
         List<String> tabComplete = new ArrayList<String>();
 
-        if (a.length == 0) {
+        if (a.length == 1) {
             tabComplete.add("help");
             tabComplete.add("reload");
             tabComplete.add("teleport");
@@ -88,11 +88,11 @@ public class Remanso extends JavaPlugin {
             tabComplete.add("zone");
         }
 
-        if (a.length == 1 && a[0].equals("teleport")) {
+        if (a.length == 2 && a[0].equals("teleport")) {
             tabComplete.add("RETURN LIST OF ZONES");
         }
 
-        if (a.length == 1 && a[0].equals("zone")) {
+        if (a.length == 2 && a[0].equals("zone")) {
             tabComplete.add("chunk");
             tabComplete.add("create");
             tabComplete.add("delete");
