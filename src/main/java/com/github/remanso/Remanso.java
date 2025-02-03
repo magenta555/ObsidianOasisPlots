@@ -37,7 +37,7 @@ public class Remanso extends JavaPlugin {
         // Check if no arguments were provided; display plugin version info
         if (a.length == 0) {
             s.sendMessage("Remanso, version 0, created by magenta555");
-            s.sendMessage("Land zoning plugin for Minecraft servers!")
+            s.sendMessage("Land zoning plugin for Minecraft servers!");
             return true; // Command processed successfully
         }
         
