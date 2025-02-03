@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import org.bukkit.entity.HumanEntity;
 
 // Main class that extends JavaPlugin, the base class for all Bukkit plugins
-public class MinecraftGlass extends JavaPlugin {
+public class Remanso extends JavaPlugin {
     
     // Called when the plugin is enabled
     public void onEnable() {
@@ -25,7 +25,7 @@ public class MinecraftGlass extends JavaPlugin {
         saveResource("config.yml", false);
         
         // Register event listeners for handling specific game events
-        Bukkit.getPluginManager().registerEvents(new Zone(this), this);
+        // Bukkit.getPluginManager().registerEvents(new Zone(this), this);
         
         // Set command executors for custom commands defined in plugin.yml
         this.getCommand("remanso").setExecutor(this);
@@ -36,7 +36,8 @@ public class MinecraftGlass extends JavaPlugin {
     public boolean onCommand(CommandSender s, Command c, String l, String[] a) {
         // Check if no arguments were provided; display plugin version info
         if (a.length == 0) {
-            s.sendMessage("Remanso, version 0, by magenta555");
+            s.sendMessage("Remanso, version 0, created by magenta555");
+            s.sendMessage("Land zoning plugin for Minecraft servers!")
             return true; // Command processed successfully
         }
         
@@ -79,6 +80,8 @@ public class MinecraftGlass extends JavaPlugin {
 
     // Provide tab completion options for commands (currently not implemented)
     public List<String> onTabComplete(CommandSender s, Command c, String l, String[] a) {
-        return true; // Return true to indicate tab completion is available (placeholder)
+        List<String> tabComplete = new ArrayList<String>();
+        tabComplete.add("hi");
+        return tabComplete;
     }
 }

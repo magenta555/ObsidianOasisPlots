@@ -1,2 +1,2 @@
 # Remanso
-Manage land in single-kingdom Minecraft servers with this simple plugin!
+Land zoning plugin for Minecraft servers!

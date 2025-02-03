@@ -1,7 +1,7 @@
 name: Remanso
 version: 0
 main: com.github.remanso.Remanso
-description: Manage land in single-kingdom Minecraft servers with this simple plugin!
+description: Land zoning plugin for Minecraft servers!
 author: magenta555
 website: https://github.com/magenta555/Remanso
 api-version: 1.21.4
