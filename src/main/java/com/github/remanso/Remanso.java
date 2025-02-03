@@ -3,9 +3,7 @@ package com.github.remanso;
 // Import necessary classes from the Bukkit API for plugin development
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Bukkit;
-import java.util.Set;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.command.CommandSender;
@@ -13,8 +11,6 @@ import org.bukkit.command.Command;
 import org.bukkit.Material;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
-import org.bukkit.entity.HumanEntity;
 
 // Main class that extends JavaPlugin, the base class for all Bukkit plugins
 public class Remanso extends JavaPlugin {
@@ -33,18 +29,19 @@ public class Remanso extends JavaPlugin {
     }
 
     // Handle commands sent by players or console
+    @SuppressWarnings("deprecation")
     public boolean onCommand(CommandSender s, Command c, String l, String[] a) {
         // Check if no arguments were provided; display plugin version info
         if (a.length == 0) {
-            s.sendMessage("Remanso, version 0, created by magenta555");
-            s.sendMessage("Land zoning plugin for Minecraft servers!");
+            s.sendMessage("§dRemanso, version 0, created by magenta555");
+            s.sendMessage("§dLand zoning plugin for Minecraft servers!");
             return true; // Command processed successfully
         }
         
         // Reload the plugin's configuration if "reload" command is issued
         if (a[0].equals("reload")) {
             reloadConfig(); // Reloads the config.yml file from disk
-            s.sendMessage("Reloaded Remanso config.yml");
+            s.sendMessage("§dReloaded Remanso config.yml");
             return true; // Command processed successfully
         }
         
@@ -72,7 +69,7 @@ public class Remanso extends JavaPlugin {
             
             player.getInventory().addItem(itemStack); // Add the customized item to player's inventory
             
-            s.sendMessage("Added the item to the player's inventory!"); // Confirm action to sender
+            s.sendMessage("§dYou should now have a Zoning Tool!"); // Confirm action to sender
         }
         
         return true; // Command processed successfully
@@ -86,7 +83,7 @@ public class Remanso extends JavaPlugin {
             tabComplete.add("help");
             tabComplete.add("reload");
             tabComplete.add("teleport");
-            tabComplete.add("teleport-location")
+            tabComplete.add("teleport-location");
             tabComplete.add("tool");
             tabComplete.add("zone");
         }
