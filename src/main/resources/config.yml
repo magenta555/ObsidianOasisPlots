@@ -1,0 +1,6 @@
+remanso:
+  tool:
+    material: STICK
+    name: §dZoning Tool
+    lore: Create zones!
+    glint: true
