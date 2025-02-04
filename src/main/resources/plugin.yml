@@ -3,16 +3,16 @@ version: 0
 main: com.github.remanso.Remanso
 description: Land zoning plugin for Minecraft servers!
 author: magenta555
-website: https://github.com/magenta555/Remanso
+website: https://github.com/magenta555/remanso
 api-version: 1.21.4
 commands:
   remanso:
     description: Display plugin information or use all Remanso commands!
     permission: remanso.remanso
-    permission-message: You cannot use this command.
+    permission-message: §d[Remanso] You cannot use this command.
     usage: /remanso
   r:
     description: Display plugin information or use all Remanso commands!
     permission: remanso.r
-    permission-message: You cannot use this command.
+    permission-message: §d[Remanso]You cannot use this command.
     usage: /r
