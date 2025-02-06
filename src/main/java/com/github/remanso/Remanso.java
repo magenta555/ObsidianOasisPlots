@@ -1,106 +1,138 @@
 package com.github.remanso;
 
-// Import necessary classes from the Bukkit API for plugin development
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.Command;
 import org.bukkit.Material;
+import org.bukkit.command.TabCompleter; // Import TabCompleter
 import java.util.List;
 import java.util.ArrayList;
 
-// Main class that extends JavaPlugin, the base class for all Bukkit plugins
-public class Remanso extends JavaPlugin {
-    
-    // Called when the plugin is enabled
+public class Remanso extends JavaPlugin implements TabCompleter { // Implement TabCompleter
+
+    private ZoneManager zoneManager;
+
+    @Override
     public void onEnable() {
-        // Save the default configuration file if it doesn't exist
-        saveResource("config.yml", false);
-        
-        // Register event listeners for handling specific game events
-        // Bukkit.getPluginManager().registerEvents(new Zone(this), this);
-        
-        // Set command executors for custom commands defined in plugin.yml
-        this.getCommand("remanso").setExecutor(this);
-        this.getCommand("r").setExecutor(this);
+        saveDefaultConfig();
+        zoneManager = new ZoneManager(this);
+
+        // Register Event Listeners
+        getServer().getPluginManager().registerEvents(new ZoneToolListener(this, zoneManager), this);
+        getServer().getPluginManager().registerEvents(new ZoneEnterExitListener(this, zoneManager), this);
+
+        // Set Command Executor and Tab Completer
+        getCommand("remanso").setExecutor(this);
+        getCommand("remanso").setTabCompleter(this); // Set the tab completer
+        getCommand("r").setExecutor(this);
+        getCommand("r").setTabCompleter(this); // also set it for the r command
     }
 
-    // Handle commands sent by players or console
-    @SuppressWarnings("deprecation")
-    public boolean onCommand(CommandSender s, Command c, String l, String[] a) {
-        // Check if no arguments were provided; display plugin version info
-        if (a.length == 0) {
-            s.sendMessage("§d[Remanso] Remanso, version 0, created by magenta555");
-            s.sendMessage("§d[Remanso] Land zoning plugin for Minecraft servers!");
-            return true; // Command processed successfully
-        }
-        
-        // Reload the plugin's configuration if "reload" command is issued
-        if (a[0].equals("reload")) {
-            reloadConfig(); // Reloads the config.yml file from disk
-            s.sendMessage("§d[Remanso] Reloaded Remanso config.yml");
-            return true; // Command processed successfully
-        }
-        
-        // Handle the "tool" command to give a custom item to the player
-        if (a[0].equals("tool")) {
-            Player player = Bukkit.getServer().getPlayer(s.getName()); // Get the player who issued the command
-            
-            // Create an ItemStack using material defined in config.yml
-            ItemStack itemStack = new ItemStack(Material.matchMaterial(getConfig().getString("remanso.tool.material")));
-            
-            // Get and set metadata for the item (display name and lore)
-            ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName(getConfig().getString("remanso.tool.name")); // Set custom display name
-            
-            List<String> loreList = new ArrayList<String>(); // Create a list for lore descriptions
-            loreList.add(getConfig().getString("remanso.tool.lore")); // Add lore from config
-            itemMeta.setLore(loreList); // Set lore on the item
-            
-            // Check if the item should have an enchantment glint and apply it if so
-            if (getConfig().getString("remanso.tool.glint").equals("true")) {
-                itemMeta.setEnchantmentGlintOverride(true); // Enable glint effect on item
+    @Override
+    public void onDisable() {
+        zoneManager.saveZonesToConfig();
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (command.getName().equalsIgnoreCase("remanso") || command.getName().equalsIgnoreCase("r")) {
+            if (args.length == 0) {
+                sender.sendMessage("§d[Remanso] Remanso, version 0, created by magenta555");
+                sender.sendMessage("§d[Remanso] Land zoning plugin for Minecraft servers!");
+                return true;
             }
-            
-            itemStack.setItemMeta(itemMeta); // Apply metadata to the ItemStack
-            
-            player.getInventory().addItem(itemStack); // Add the customized item to player's inventory
-            
-            s.sendMessage("§d[Remanso] You should now have a Zoning Tool!"); // Confirm action to sender
+
+            switch (args[0].toLowerCase()) {
+                case "zone":
+                    if (args.length >= 3 && args[1].equalsIgnoreCase("create")) { // Expect at least 3 args: "zone", "create", [zoneName]
+                        StringBuilder zoneNameBuilder = new StringBuilder();
+                        for (int i = 2; i < args.length; i++) {
+                            zoneNameBuilder.append(args[i]).append(" "); // Append with space
+                        }
+                        String zoneName = zoneNameBuilder.toString().trim(); // Trim to remove trailing space
+
+                        if (zoneName.isEmpty()) {
+                            sender.sendMessage("§cUsage: /remanso zone create [name]");
+                            return true;
+                        }
+                        return zoneManager.createZoneCommand(sender, zoneName);
+                    } else {
+                        sender.sendMessage("§cUsage: /remanso zone create [name]");
+                        return true;
+                    }
+                case "tool":
+                    giveZoneTool(sender);
+                    return true;
+                case "reload":
+                    reloadConfig(sender);
+                    return true;
+                default:
+                    sender.sendMessage("§cUnknown command. Use /remanso for help.");
+                    return false;
+            }
         }
-        
-        return true; // Command processed successfully
+        return false;
     }
 
-    // Provide tab completion options for commands
-    public List<String> onTabComplete(CommandSender s, Command c, String l, String[] a) {
-        List<String> tabComplete = new ArrayList<String>();
-
-        if (a.length == 1) {
-            tabComplete.add("help");
-            tabComplete.add("reload");
-            tabComplete.add("teleport");
-            tabComplete.add("teleport-location");
-            tabComplete.add("tool");
-            tabComplete.add("zone");
+    private void giveZoneTool(CommandSender sender) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("§cThis command can only be executed by a player.");
+            return;
         }
 
-        if (a.length == 2 && a[0].equals("teleport")) {
-            tabComplete.add("RETURN LIST OF ZONES");
+        Player player = (Player) sender;
+        Material material = Material.matchMaterial(getConfig().getString("remanso.tool.material"));
+
+        if (material == null) {
+            player.sendMessage("§cInvalid material specified in config.");
+            return;
         }
 
-        if (a.length == 2 && a[0].equals("zone")) {
-            tabComplete.add("chunk");
-            tabComplete.add("create");
-            tabComplete.add("delete");
-            tabComplete.add("designate");
-            tabComplete.add("merge");
-            tabComplete.add("world");
+        ItemStack itemStack = new ItemStack(material);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+
+        if (itemMeta != null) {
+            itemMeta.setDisplayName(getConfig().getString("remanso.tool.name"));
+            List<String> loreList = new ArrayList<>();
+            loreList.add(getConfig().getString("remanso.tool.lore"));
+            itemMeta.setLore(loreList);
+
+            if (getConfig().getBoolean("remanso.tool.glint", false)) {
+                itemMeta.setEnchantmentGlint(true);
+            }
+
+            itemStack.setItemMeta(itemMeta);
+            player.getInventory().addItem(itemStack);
+            player.sendMessage("§d[Remanso] You should now have a Zoning Tool!");
+        } else {
+            player.sendMessage("§cFailed to create item meta.");
         }
-        
-        return tabComplete;
+    }
+
+    private void reloadConfig(CommandSender sender) {
+        reloadConfig();
+        sender.sendMessage("§d[Remanso] Reloaded Remanso config.yml");
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        List<String> completions = new ArrayList<>();
+
+        if (command.getName().equalsIgnoreCase("remanso") || command.getName().equalsIgnoreCase("r")) {
+            if (args.length == 1) {
+                completions.add("help");
+                completions.add("reload");
+                completions.add("teleport");
+                completions.add("teleport-location");
+                completions.add("tool");
+                completions.add("zone");
+            } else if (args.length == 2 && args[0].equalsIgnoreCase("zone")) {
+                completions.add("create");
+            }
+        }
+        return completions;
     }
 }
