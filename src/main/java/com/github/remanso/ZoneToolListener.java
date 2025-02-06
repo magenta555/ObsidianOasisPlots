@@ -9,6 +9,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.Location;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ZoneToolListener implements Listener {
 
@@ -46,10 +50,27 @@ public class ZoneToolListener implements Listener {
         }
 
         ItemMeta meta = item.getItemMeta();
-        String displayName = plugin.getConfig().getString("remanso.tool.name");
-        String lore = plugin.getConfig().getString("remanso.tool.lore");
 
-        if (meta.hasDisplayName() && meta.getDisplayName().equals(displayName) && meta.hasLore() && meta.getLore().contains(lore)) {
+        // Get display name using Adventure API
+        Component displayNameComponent = meta.displayName();
+        String displayName = null;
+        if (displayNameComponent != null) {
+            displayName = PlainTextComponentSerializer.plainText().serialize(displayNameComponent);
+        }
+
+        // Get lore using Adventure API
+        List<Component> loreComponents = meta.lore();
+        List<String> lore = null;
+        if (loreComponents != null) {
+            lore = loreComponents.stream()
+                    .map(component -> PlainTextComponentSerializer.plainText().serialize(component))
+                    .collect(Collectors.toList());
+        }
+
+        String expectedDisplayName = plugin.getConfig().getString("remanso.tool.name");
+        List<String> expectedLore = plugin.getConfig().getStringList("remanso.tool.lore");
+
+        if (displayName != null && displayName.equals(expectedDisplayName) && lore != null && lore.equals(expectedLore)) {
             return true;
         }
 

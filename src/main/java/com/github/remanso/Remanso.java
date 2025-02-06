@@ -7,11 +7,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.Material;
-import org.bukkit.command.TabCompleter; // Import TabCompleter
+import net.kyori.adventure.text.Component;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
-public class Remanso extends JavaPlugin implements TabCompleter { // Implement TabCompleter
+public class Remanso extends JavaPlugin {
 
     private ZoneManager zoneManager;
 
@@ -26,9 +27,9 @@ public class Remanso extends JavaPlugin implements TabCompleter { // Implement T
 
         // Set Command Executor and Tab Completer
         getCommand("remanso").setExecutor(this);
-        getCommand("remanso").setTabCompleter(this); // Set the tab completer
+        getCommand("remanso").setTabCompleter(this);
         getCommand("r").setExecutor(this);
-        getCommand("r").setTabCompleter(this); // also set it for the r command
+        getCommand("r").setTabCompleter(this);
     }
 
     @Override
@@ -47,12 +48,12 @@ public class Remanso extends JavaPlugin implements TabCompleter { // Implement T
 
             switch (args[0].toLowerCase()) {
                 case "zone":
-                    if (args.length >= 3 && args[1].equalsIgnoreCase("create")) { // Expect at least 3 args: "zone", "create", [zoneName]
+                    if (args.length >= 3 && args[1].equalsIgnoreCase("create")) {
                         StringBuilder zoneNameBuilder = new StringBuilder();
                         for (int i = 2; i < args.length; i++) {
-                            zoneNameBuilder.append(args[i]).append(" "); // Append with space
+                            zoneNameBuilder.append(args[i]).append(" ");
                         }
-                        String zoneName = zoneNameBuilder.toString().trim(); // Trim to remove trailing space
+                        String zoneName = zoneNameBuilder.toString().trim();
 
                         if (zoneName.isEmpty()) {
                             sender.sendMessage("§cUsage: /remanso zone create [name]");
@@ -95,13 +96,19 @@ public class Remanso extends JavaPlugin implements TabCompleter { // Implement T
         ItemMeta itemMeta = itemStack.getItemMeta();
 
         if (itemMeta != null) {
-            itemMeta.setDisplayName(getConfig().getString("remanso.tool.name"));
-            List<String> loreList = new ArrayList<>();
-            loreList.add(getConfig().getString("remanso.tool.lore"));
-            itemMeta.setLore(loreList);
+            // Use Adventure API for display name
+            String displayName = getConfig().getString("remanso.tool.name");
+            itemMeta.displayName(Component.text(displayName == null ? "" : displayName));
+
+            // Use Adventure API for lore
+            List<String> loreConfig = getConfig().getStringList("remanso.tool.lore");
+            List<Component> lore = loreConfig.stream()
+                    .map(s -> Component.text(s == null ? "" : s))
+                    .collect(Collectors.toList());
+            itemMeta.lore(lore);
 
             if (getConfig().getBoolean("remanso.tool.glint", false)) {
-                itemMeta.setEnchantmentGlint(true);
+                itemMeta.setEnchantmentGlintOverride(true);
             }
 
             itemStack.setItemMeta(itemMeta);

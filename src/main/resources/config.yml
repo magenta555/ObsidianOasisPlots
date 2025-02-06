@@ -1,6 +1,8 @@
 remanso:
   tool:
     material: STICK
-    name: §dZoning Tool
-    lore: §dCreate and merge zones!
+    name: "§dZoning Tool"  # Added quotes
+    lore:
+      - "§dCreate and merge zones!" # This is now a list
+      - "§7Right-click to select corners"  # Added a second line as an example
     glint: true
