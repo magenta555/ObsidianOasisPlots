@@ -72,10 +72,18 @@ public class ZoneTeleportCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         if (args.length == 1) {
             String partialName = args[0].toLowerCase();
-            return plugin.getZones().values().stream()
-                    .filter(zone -> zone.getOwner() != null && zone.getOwner().equals(player.getUniqueId()) && zone.getName().toLowerCase().startsWith(partialName))
-                    .map(Zone::getName)
-                    .collect(Collectors.toList());
+            if (player.isOp()) {
+                return plugin.getZones().values().stream()
+                        .filter(zone -> zone.getName().toLowerCase().startsWith(partialName))
+                        .map(Zone::getName)
+                        .collect(Collectors.toList());
+            } else {
+                return plugin.getZones().values().stream()
+                        .filter(zone -> (zone.getOwner() != null && zone.getOwner().equals(player.getUniqueId())) || zone.getAllowedPlayers().contains(player.getUniqueId().toString()))
+                        .filter(zone -> zone.getName().toLowerCase().startsWith(partialName))
+                        .map(Zone::getName)
+                        .collect(Collectors.toList());
+            }
         }
         return null;
     }
