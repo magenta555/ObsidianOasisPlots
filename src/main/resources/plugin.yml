@@ -33,6 +33,10 @@ commands:
     description: Allow a player to interact with and teleport to your zone.
     usage: /zoneallow <player>
     permission: remanso.zoneallow
+  zonedisallow:
+    description: Disallow a player to interact with and teleport to your zone.
+    usage: /zonedisallow <player>
+    permission: remanso.zonedisallow
   zoneteleport:
     description: Teleport to a zone.
     usage: /zoneteleport <name>
@@ -62,6 +66,9 @@ permissions:
     default: true
   remanso.zoneallow:
     description: Allows players to use the /zoneallow command.
+    default: true
+  remanso.zonedisallow:
+    description: Allows players to use the /zonedisallow command.
     default: true
   remanso.zoneteleport:
     description: Allows players to use the /zoneteleport command.
