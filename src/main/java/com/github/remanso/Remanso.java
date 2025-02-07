@@ -3,6 +3,7 @@ package com.github.remanso;
 
 import com.github.remanso.commands.*;
 import com.github.remanso.listeners.BlockInteractListener;
+import com.github.remanso.listeners.ZoneToolListener;
 import com.github.remanso.model.Zone;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -34,6 +35,7 @@ public class Remanso extends JavaPlugin {
         getCommand("zonesetteleport").setExecutor(new ZoneSetTeleportCommand(this));
 
         getServer().getPluginManager().registerEvents(new BlockInteractListener(this), this);
+        getServer().getPluginManager().registerEvents(new ZoneToolListener(), this);
 
         getLogger().info("Remanso plugin enabled!");
     }
