@@ -6,10 +6,14 @@ import com.github.remanso.model.Zone;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.Location;
 
-public class ZoneTeleportCommand implements CommandExecutor {
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class ZoneTeleportCommand implements CommandExecutor, TabCompleter {
 
     private final Remanso plugin;
 
@@ -57,5 +61,22 @@ public class ZoneTeleportCommand implements CommandExecutor {
         player.teleport(teleportLocation);
         player.sendMessage("§aTeleported to zone '" + zoneName + "'.");
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (!(sender instanceof Player)) {
+            return null;
+        }
+
+        Player player = (Player) sender;
+        if (args.length == 1) {
+            String partialName = args[0].toLowerCase();
+            return plugin.getZones().values().stream()
+                    .filter(zone -> zone.getOwner() != null && zone.getOwner().equals(player.getUniqueId()) && zone.getName().toLowerCase().startsWith(partialName))
+                    .map(Zone::getName)
+                    .collect(Collectors.toList());
+        }
+        return null;
     }
 }
