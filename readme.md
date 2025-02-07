@@ -16,11 +16,22 @@ Land zoning plugin for Minecraft servers!
 |     |     |     |     ├── github
 |     |     |     |     |     ├── remanso
 |     |     |     |     |     |     ├── Remanso.java
-|     |     |     |     |     |     ├── Zone.java
-|     |     |     |     |     |     ├── ZoneEnterExitListener.java
-|     |     |     |     |     |     ├── ZoneManager.java
-|     |     |     |     |     |     ├── ZoneToolListener.java
+|     |     |     |     |     |     ├── commands
+|     |     |     |     |     |     |     ├── LocationTagType.java
+|     |     |     |     |     |     |     ├── ZoneAllowCommand.java
+|     |     |     |     |     |     |     ├── ZoneAvailableCommand.java
+|     |     |     |     |     |     |     ├── ZoneClaimCommand.java
+|     |     |     |     |     |     |     ├── ZoneCreateCommand.java
+|     |     |     |     |     |     |     ├── ZoneDeleteCommand.java
+|     |     |     |     |     |     |     ├── ZoneInfoCommand.java
+|     |     |     |     |     |     |     ├── ZoneSetTeleportCommand.java
+|     |     |     |     |     |     |     ├── ZoneTeleportCommand.java
+|     |     |     |     |     |     |     ├── ZoneToolCommand.java
+|     |     |     |     |     |     ├── listeners
+|     |     |     |     |     |     |     ├── BlockInteractListener.java
+|     |     |     |     |     |     |     ├── ZoneToolListener.java
+|     |     |     |     |     |     ├── model
+|     |     |     |     |     |     |     ├── Zone.java
 |     |     ├── resources
-|     |     |     ├── config.yml
 |     |     |     ├── plugin.yml
 ```
