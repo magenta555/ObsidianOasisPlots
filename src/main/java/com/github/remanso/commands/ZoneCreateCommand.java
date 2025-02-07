@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.Location;
+import org.bukkit.World;
 
 public class ZoneCreateCommand implements CommandExecutor {
 
@@ -58,11 +59,14 @@ public class ZoneCreateCommand implements CommandExecutor {
         zone.setName(zoneName);
         zone.setWorldName(pos1.getWorld().getName());
         zone.setMinX(Math.min(pos1.getBlockX(), pos2.getBlockX()));
-        zone.setMinY(Math.min(pos1.getBlockY(), pos2.getBlockY()));
         zone.setMinZ(Math.min(pos1.getBlockZ(), pos2.getBlockZ()));
         zone.setMaxX(Math.max(pos1.getBlockX(), pos2.getBlockX()));
-        zone.setMaxY(Math.max(pos1.getBlockY(), pos2.getBlockY()));
         zone.setMaxZ(Math.max(pos1.getBlockZ(), pos2.getBlockZ()));
+
+        World world = pos1.getWorld();
+        zone.setMinY(world.getMinHeight());
+        zone.setMaxY(world.getMaxHeight());
+
         zone.setOwner(player.getUniqueId());
         zone.setAvailable(false);
 
