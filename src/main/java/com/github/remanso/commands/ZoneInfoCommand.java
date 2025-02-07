@@ -38,11 +38,11 @@ public class ZoneInfoCommand implements CommandExecutor {
                 .orElse(null);
 
         if (zone == null) {
-            player.sendMessage("You are not standing in a zone.");
+            player.sendMessage("§dYou are not standing in a zone.");
             return true;
         }
 
-        player.sendMessage("§6Zone Info:");
+        player.sendMessage("§dZone Info:");
         player.sendMessage("§7Name: §f" + zone.getName());
         if (zone.getOwner() != null) {
             player.sendMessage("§7Owner: §f" + plugin.getServer().getOfflinePlayer(zone.getOwner()).getName());
