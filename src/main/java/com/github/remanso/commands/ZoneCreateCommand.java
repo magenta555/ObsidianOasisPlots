@@ -70,6 +70,9 @@ public class ZoneCreateCommand implements CommandExecutor {
         zone.setOwner(player.getUniqueId());
         zone.setAvailable(false);
 
+        // Set default teleport location to pos1
+        zone.setTeleportLocation(pos1);
+
         plugin.getZones().put(zoneName, zone);
         plugin.saveZones();
 
