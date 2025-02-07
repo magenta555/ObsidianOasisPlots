@@ -42,12 +42,12 @@ public class ZoneListCommand implements CommandExecutor {
         }
 
         if (zones.isEmpty()) {
-            player.sendMessage("§cYou are not an owner or allowed player in any zones.");
+            player.sendMessage("§dYou are not an owner or allowed player in any zones.");
             return true;
         }
 
-        player.sendMessage("§6Your Zones:");
-        zones.forEach(zone -> player.sendMessage("§7- §f" + zone.getName()));
+        player.sendMessage("§dYour Zones:");
+        zones.forEach(zone -> player.sendMessage("§d- §f" + zone.getName()));
         return true;
     }
 }

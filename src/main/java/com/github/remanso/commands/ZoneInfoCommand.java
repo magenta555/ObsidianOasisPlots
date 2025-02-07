@@ -30,7 +30,7 @@ public class ZoneInfoCommand implements CommandExecutor, TabCompleter {
 
         Player player = (Player) sender;
         if (!player.hasPermission("remanso.zoneinfo")) {
-            player.sendMessage("You do not have permission to use this command.");
+            player.sendMessage("§dYou do not have permission to use this command.");
             return true;
         }
 
@@ -42,20 +42,20 @@ public class ZoneInfoCommand implements CommandExecutor, TabCompleter {
                     .orElse(null);
 
             if (zone == null) {
-                player.sendMessage("You are not standing in a zone.");
+                player.sendMessage("§dYou are not standing in a zone.");
                 return true;
             }
         } else {
             String zoneName = args[0];
             zone = plugin.getZones().get(zoneName);
             if (zone == null) {
-                player.sendMessage("Zone '" + zoneName + "' not found.");
+                player.sendMessage("§dZone '" + zoneName + "' not found.");
                 return true;
             }
         }
 
 
-        player.sendMessage("§6Zone Info:");
+        player.sendMessage("§dZone Info:");
         player.sendMessage("§7Name: §f" + zone.getName());
         if (zone.getOwner() != null) {
             player.sendMessage("§7Owner: §f" + plugin.getServer().getOfflinePlayer(zone.getOwner()).getName());
