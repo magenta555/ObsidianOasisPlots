@@ -25,7 +25,7 @@ public class ZoneAvailableCommand implements CommandExecutor {
 
         Player player = (Player) sender;
         if (!player.hasPermission("remanso.zoneavailable")) {
-            player.sendMessage("§dYou do not have permission to use this command.");
+            player.sendMessage("You do not have permission to use this command.");
             return true;
         }
 
@@ -35,15 +35,17 @@ public class ZoneAvailableCommand implements CommandExecutor {
                 .orElse(null);
 
         if (zone == null) {
-            player.sendMessage("§dYou are not standing in a zone.");
+            player.sendMessage("You are not standing in a zone.");
             return true;
         }
 
         if (!zone.getOwner().equals(player.getUniqueId())) {
-            player.sendMessage("§dYou do not own this zone.");
+            player.sendMessage("You do not own this zone.");
             return true;
         }
 
+        zone.setOwner(null); // Clear the current owner
+        zone.getAllowedPlayers().clear(); // Clear the current allowed players
         zone.setAvailable(true);
         plugin.saveZones();
         player.sendMessage("§aThis zone is now available for claiming.");
