@@ -21,6 +21,10 @@ commands:
     description: Change the purpose of the zone you're standing in.
     usage: /zonepurpose <purpose>
     permission: remanso.zonepurpose
+  zoneinfo:
+    description: Get information about the zone you're standing in.
+    usage: /zoneinfo
+    permission: remanso.zoneinfo
   zonedelete:
     description: Delete the zone you're standing in.
     usage: /zonedelete
