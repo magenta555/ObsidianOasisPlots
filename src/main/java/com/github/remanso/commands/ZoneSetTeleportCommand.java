@@ -26,7 +26,7 @@ public class ZoneSetTeleportCommand implements CommandExecutor {
 
         Player player = (Player) sender;
         if (!player.hasPermission("remanso.zonesetteleport")) {
-            player.sendMessage("You do not have permission to use this command.");
+            player.sendMessage("§dYou do not have permission to use this command.");
             return true;
         }
 
@@ -36,12 +36,12 @@ public class ZoneSetTeleportCommand implements CommandExecutor {
                 .orElse(null);
 
         if (zone == null) {
-            player.sendMessage("You are not standing in a zone.");
+            player.sendMessage("§dYou are not standing in a zone.");
             return true;
         }
 
         if (!zone.getOwner().equals(player.getUniqueId())) {
-            player.sendMessage("You do not own this zone.");
+            player.sendMessage("§dYou do not own this zone.");
             return true;
         }
 

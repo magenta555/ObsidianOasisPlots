@@ -28,7 +28,7 @@ public class ZoneInfoCommand implements CommandExecutor {
 
         Player player = (Player) sender;
         if (!player.hasPermission("remanso.zoneinfo")) {
-            player.sendMessage("You do not have permission to use this command.");
+            player.sendMessage("§dYou do not have permission to use this command.");
             return true;
         }
 
