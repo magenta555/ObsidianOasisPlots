@@ -11,8 +11,16 @@ commands:
     permission: remanso.zonetool
   zonecreate:
     description: Create a zone after using a zoning tool.
-    usage: /zonecreate <name>
+    usage: /zonecreate <name> <purpose>
     permission: remanso.zonecreate
+  zonename:
+    description: Change the name of the zone you're standing in.
+    usage: /zonename <name>
+    permission: remanso.zonename
+  zonepurpose:
+    description: Change the purpose of the zone you're standing in.
+    usage: /zonepurpose <purpose>
+    permission: remanso.zonepurpose
   zonedelete:
     description: Delete the zone you're standing in.
     usage: /zonedelete
@@ -23,7 +31,7 @@ commands:
     permission: remanso.zonemerge
   zoneteleport:
     description: Teleport to a zone.
-    usage: /zoneteleport [name]
+    usage: /zoneteleport <name>
     permission: remanso.zoneteleport
   zonesetteleport:
     description: Set the teleport location for the zone you're standing in.
