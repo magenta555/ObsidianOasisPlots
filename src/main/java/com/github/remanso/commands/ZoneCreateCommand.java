@@ -41,8 +41,8 @@ public class ZoneCreateCommand implements CommandExecutor {
             return true;
         }
 
-        Location pos1 = player.getPersistentDataContainer().get(ZoneToolCommand.POS1_KEY, LocationTagType.TAG);
-        Location pos2 = player.getPersistentDataContainer().get(ZoneToolCommand.POS2_KEY, LocationTagType.TAG);
+        Location pos1 = player.getPersistentDataContainer().get(LocationTagType.POS1_KEY, LocationTagType.TAG);
+        Location pos2 = player.getPersistentDataContainer().get(LocationTagType.POS2_KEY, LocationTagType.TAG);
 
         if (pos1 == null || pos2 == null) {
             player.sendMessage("You must select two corners with the Zoning Tool first.");

@@ -13,6 +13,7 @@ import java.util.Collections;
 
 public class ZoneToolCommand implements CommandExecutor {
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
