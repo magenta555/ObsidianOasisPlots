@@ -1,145 +1,120 @@
+// src/main/java/com/github/remanso/Remanso.java
 package com.github.remanso;
 
+import com.github.remanso.commands.*;
+import com.github.remanso.listeners.BlockInteractListener;
+import com.github.remanso.listeners.ZoneToolListener;
+import com.github.remanso.model.Zone;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.Command;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.Material;
-import net.kyori.adventure.text.Component;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.Location;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class Remanso extends JavaPlugin {
 
-    private ZoneManager zoneManager;
+    private final Map<String, Zone> zones = new HashMap<>();
+    private FileConfiguration zonesConfig;
 
     @Override
     public void onEnable() {
-        saveDefaultConfig();
-        zoneManager = new ZoneManager(this);
+        zonesConfig = getConfig();
+        loadZones();
 
-        // Register Event Listeners
-        getServer().getPluginManager().registerEvents(new ZoneToolListener(this, zoneManager), this);
-        getServer().getPluginManager().registerEvents(new ZoneEnterExitListener(this, zoneManager), this);
+        getCommand("zonetool").setExecutor(new ZoneToolCommand());
+        getCommand("zonecreate").setExecutor(new ZoneCreateCommand(this));
+        getCommand("zoneavailable").setExecutor(new ZoneAvailableCommand(this));
+        getCommand("zonedelete").setExecutor(new ZoneDeleteCommand(this));
+        getCommand("zoneclaim").setExecutor(new ZoneClaimCommand(this));
+        getCommand("zoneinfo").setExecutor(new ZoneInfoCommand(this));
+        getCommand("zoneallow").setExecutor(new ZoneAllowCommand(this));
+        getCommand("zoneteleport").setExecutor(new ZoneTeleportCommand(this));
+        getCommand("zonesetteleport").setExecutor(new ZoneSetTeleportCommand(this));
 
-        // Set Command Executor and Tab Completer
-        getCommand("remanso").setExecutor(this);
-        getCommand("remanso").setTabCompleter(this);
-        getCommand("r").setExecutor(this);
-        getCommand("r").setTabCompleter(this);
+        getServer().getPluginManager().registerEvents(new BlockInteractListener(this), this);
+        getServer().getPluginManager().registerEvents(new ZoneToolListener(), this);
+
+        getLogger().info("Remanso plugin enabled!");
     }
 
     @Override
     public void onDisable() {
-        zoneManager.saveZonesToConfig();
+        saveZones();
+        getLogger().info("Remanso plugin disabled!");
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (command.getName().equalsIgnoreCase("remanso") || command.getName().equalsIgnoreCase("r")) {
-            if (args.length == 0) {
-                sender.sendMessage("§d[Remanso] Remanso, version 0, created by magenta555");
-                sender.sendMessage("§d[Remanso] Land zoning plugin for Minecraft servers!");
-                return true;
-            }
+    public Map<String, Zone> getZones() {
+        return zones;
+    }
 
-            switch (args[0].toLowerCase()) {
-                case "zone":
-                    if (args.length >= 3 && args[1].equalsIgnoreCase("create")) {
-                        StringBuilder zoneNameBuilder = new StringBuilder();
-                        for (int i = 2; i < args.length; i++) {
-                            zoneNameBuilder.append(args[i]).append(" ");
-                        }
-                        String zoneName = zoneNameBuilder.toString().trim();
+    public FileConfiguration getZonesConfig() {
+        return zonesConfig;
+    }
 
-                        if (zoneName.isEmpty()) {
-                            sender.sendMessage("§cUsage: /remanso zone create [name]");
-                            return true;
-                        }
-                        return zoneManager.createZoneCommand(sender, zoneName);
-                    } else {
-                        sender.sendMessage("§cUsage: /remanso zone create [name]");
-                        return true;
+    public void loadZones() {
+        ConfigurationSection zonesSection = zonesConfig.getConfigurationSection("zones");
+        if (zonesSection != null) {
+            for (String zoneName : zonesSection.getKeys(false)) {
+                ConfigurationSection zoneSection = zonesSection.getConfigurationSection(zoneName);
+                if (zoneSection != null) {
+                    Zone zone = new Zone();
+                    zone.setName(zoneName);
+                    zone.setWorldName(zoneSection.getString("world"));
+                    zone.setMinX(zoneSection.getInt("minX"));
+                    zone.setMinY(zoneSection.getInt("minY"));
+                    zone.setMinZ(zoneSection.getInt("minZ"));
+                    zone.setMaxX(zoneSection.getInt("maxX"));
+                    zone.setMaxY(zoneSection.getInt("maxY"));
+                    zone.setMaxZ(zoneSection.getInt("maxZ"));
+                    zone.setAvailable(zoneSection.getBoolean("available"));
+                    String ownerId = zoneSection.getString("owner");
+                    if (ownerId != null) {
+                        zone.setOwner(UUID.fromString(ownerId));
                     }
-                case "tool":
-                    giveZoneTool(sender);
-                    return true;
-                case "reload":
-                    reloadConfig(sender);
-                    return true;
-                default:
-                    sender.sendMessage("§cUnknown command. Use /remanso for help.");
-                    return false;
+                    zone.getAllowedPlayers().addAll(zoneSection.getStringList("allowedPlayers"));
+
+                    double teleportX = zoneSection.getDouble("teleportX");
+                    double teleportY = zoneSection.getDouble("teleportY");
+                    double teleportZ = zoneSection.getDouble("teleportZ");
+                    String teleportWorld = zoneSection.getString("teleportWorld");
+                    if (teleportWorld != null) {
+                        Location teleportLocation = new Location(getServer().getWorld(teleportWorld), teleportX, teleportY, teleportZ);
+                        zone.setTeleportLocation(teleportLocation);
+                    }
+                    zones.put(zoneName, zone);
+                }
             }
-        }
-        return false;
-    }
-
-    private void giveZoneTool(CommandSender sender) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("§cThis command can only be executed by a player.");
-            return;
-        }
-
-        Player player = (Player) sender;
-        Material material = Material.matchMaterial(getConfig().getString("remanso.tool.material"));
-
-        if (material == null) {
-            player.sendMessage("§cInvalid material specified in config.");
-            return;
-        }
-
-        ItemStack itemStack = new ItemStack(material);
-        ItemMeta itemMeta = itemStack.getItemMeta();
-
-        if (itemMeta != null) {
-            // Use Adventure API for display name
-            String displayName = getConfig().getString("remanso.tool.name");
-            itemMeta.displayName(Component.text(displayName == null ? "" : displayName));
-
-            // Use Adventure API for lore
-            List<String> loreConfig = getConfig().getStringList("remanso.tool.lore");
-            List<Component> lore = loreConfig.stream()
-                    .map(s -> Component.text(s == null ? "" : s))
-                    .collect(Collectors.toList());
-            itemMeta.lore(lore);
-
-            if (getConfig().getBoolean("remanso.tool.glint", false)) {
-                itemMeta.setEnchantmentGlintOverride(true);
-            }
-
-            itemStack.setItemMeta(itemMeta);
-            player.getInventory().addItem(itemStack);
-            player.sendMessage("§d[Remanso] You should now have a Zoning Tool!");
-        } else {
-            player.sendMessage("§cFailed to create item meta.");
         }
     }
 
-    private void reloadConfig(CommandSender sender) {
-        reloadConfig();
-        sender.sendMessage("§d[Remanso] Reloaded Remanso config.yml");
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        List<String> completions = new ArrayList<>();
-
-        if (command.getName().equalsIgnoreCase("remanso") || command.getName().equalsIgnoreCase("r")) {
-            if (args.length == 1) {
-                completions.add("help");
-                completions.add("reload");
-                completions.add("teleport");
-                completions.add("teleport-location");
-                completions.add("tool");
-                completions.add("zone");
-            } else if (args.length == 2 && args[0].equalsIgnoreCase("zone")) {
-                completions.add("create");
+    public void saveZones() {
+        zonesConfig.set("zones", null);
+        for (Map.Entry<String, Zone> entry : zones.entrySet()) {
+            String zoneName = entry.getKey();
+            Zone zone = entry.getValue();
+            String path = "zones." + zoneName + ".";
+            zonesConfig.set(path + "world", zone.getWorldName());
+            zonesConfig.set(path + "minX", zone.getMinX());
+            zonesConfig.set(path + "minY", zone.getMinY());
+            zonesConfig.set(path + "minZ", zone.getMinZ());
+            zonesConfig.set(path + "maxX", zone.getMaxX());
+            zonesConfig.set(path + "maxY", zone.getMaxY());
+            zonesConfig.set(path + "maxZ", zone.getMaxZ());
+            zonesConfig.set(path + "available", zone.isAvailable());
+            if (zone.getOwner() != null) {
+                zonesConfig.set(path + "owner", zone.getOwner().toString());
+            }
+            zonesConfig.set(path + "allowedPlayers", zone.getAllowedPlayers());
+            if (zone.getTeleportLocation() != null) {
+                zonesConfig.set(path + "teleportX", zone.getTeleportLocation().getX());
+                zonesConfig.set(path + "teleportY", zone.getTeleportLocation().getY());
+                zonesConfig.set(path + "teleportZ", zone.getTeleportLocation().getZ());
+                zonesConfig.set(path + "teleportWorld", zone.getTeleportLocation().getWorld().getName());
             }
         }
-        return completions;
+        saveConfig();
     }
 }

@@ -1,18 +1,71 @@
 name: Remanso
 version: 0
 main: com.github.remanso.Remanso
-description: Land zoning plugin for Minecraft servers!
-author: magenta555
-website: https://github.com/magenta555/remanso
 api-version: 1.21.4
+author: magenta555
+website: github.com/magenta555/remanso
 commands:
-  remanso:
-    description: Display plugin information or use all Remanso commands!
-    permission: remanso.remanso
-    permission-message: §d[Remanso] You cannot use this command.
-    usage: /remanso
-  r:
-    description: Display plugin information or use all Remanso commands!
-    permission: remanso.r
-    permission-message: §d[Remanso]You cannot use this command.
-    usage: /r
+  zonetool:
+    description: Gives you a zoning tool.
+    usage: /zonetool
+    permission: remanso.zonetool
+  zonecreate:
+    description: Create a zone after using a zoning tool.
+    usage: /zonecreate <name>
+    permission: remanso.zonecreate
+  zoneavailable:
+    description: Allow players to claim the zone you're standing in.
+    usage: /zoneavailable
+    permission: remanso.zoneavailable
+  zonedelete:
+    description: Delete the zone you're standing in.
+    usage: /zonedelete
+    permission: remanso.zonedelete
+  zoneclaim:
+    description: Claim the zone you're standing in.
+    usage: /zoneclaim
+    permission: remanso.zoneclaim
+  zoneinfo:
+    description: Get information about the zone you're standing in.
+    usage: /zoneinfo
+    permission: remanso.zoneinfo
+  zoneallow:
+    description: Allow a player to interact with and teleport to your zone.
+    usage: /zoneallow <player>
+    permission: remanso.zoneallow
+  zoneteleport:
+    description: Teleport to a zone.
+    usage: /zoneteleport <name>
+    permission: remanso.zoneteleport
+  zonesetteleport:
+    description: Set the teleport location for the zone you're standing in.
+    usage: /zonesetteleport
+    permission: remanso.zonesetteleport
+permissions:
+  remanso.zonetool:
+    description: Allows players to use the /zonetool command.
+    default: op
+  remanso.zonecreate:
+    description: Allows players to use the /zonecreate command.
+    default: op
+  remanso.zoneavailable:
+    description: Allows players to use the /zoneavailable command.
+    default: op
+  remanso.zonedelete:
+    description: Allows players to use the /zonedelete command.
+    default: op
+  remanso.zoneclaim:
+    description: Allows players to use the /zoneclaim command.
+    default: true
+  remanso.zoneinfo:
+    description: Allows players to use the /zoneinfo command.
+    default: true
+  remanso.zoneallow:
+    description: Allows players to use the /zoneallow command.
+    default: true
+  remanso.zoneteleport:
+    description: Allows players to use the /zoneteleport command.
+    default: true
+  remanso.zonesetteleport:
+    description: Allows players to use the /zonesetteleport command.
+    default: true
