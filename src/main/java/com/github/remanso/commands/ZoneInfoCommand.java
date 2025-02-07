@@ -8,6 +8,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+import java.util.UUID;
+
 public class ZoneInfoCommand implements CommandExecutor {
 
     private final Remanso plugin;
@@ -48,6 +51,24 @@ public class ZoneInfoCommand implements CommandExecutor {
         }
         player.sendMessage("§7Available: §f" + zone.isAvailable());
         player.sendMessage("§7Location: §f" + zone.getMinX() + ", " + zone.getMinY() + ", " + zone.getMinZ() + " to " + zone.getMaxX() + ", " + zone.getMaxY() + ", " + zone.getMaxZ());
+
+        List<String> allowedPlayers = zone.getAllowedPlayers();
+        if (!allowedPlayers.isEmpty()) {
+            StringBuilder allowedPlayersString = new StringBuilder();
+            allowedPlayersString.append("§7Allowed Players: §f");
+            for (int i = 0; i < allowedPlayers.size(); i++) {
+                UUID playerUUID = UUID.fromString(allowedPlayers.get(i));
+                String playerName = plugin.getServer().getOfflinePlayer(playerUUID).getName();
+                allowedPlayersString.append(playerName);
+                if (i < allowedPlayers.size() - 1) {
+                    allowedPlayersString.append(", ");
+                }
+            }
+            player.sendMessage(allowedPlayersString.toString());
+        } else {
+            player.sendMessage("§7Allowed Players: §fNone");
+        }
+
         return true;
     }
 }
