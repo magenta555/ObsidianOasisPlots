@@ -14,7 +14,7 @@ commands:
     usage: /zonecreate <name>
     permission: remanso.zonecreate
   zoneavailable:
-    description: Allow players to claim the zone you're standing in.
+    description: Relinquish ownership of the zone you're standing in so any player can claim it.
     usage: /zoneavailable
     permission: remanso.zoneavailable
   zonedelete:
@@ -26,15 +26,23 @@ commands:
     usage: /zoneclaim
     permission: remanso.zoneclaim
   zoneinfo:
-    description: Get information about the zone you're standing in.
-    usage: /zoneinfo
+    description: Get information about the zone you're standing in, or a zone you're allowed in.
+    usage: /zoneinfo <name>
     permission: remanso.zoneinfo
   zoneallow:
-    description: Allow a player to interact with and teleport to your zone.
+    description: Allow a player to interact with and teleport to the zone you're standing in.
     usage: /zoneallow <player>
     permission: remanso.zoneallow
+  zonedisallow:
+    description: Disallow a player to interact with and teleport to the zone you're standing in.
+    usage: /zonedisallow <player>
+    permission: remanso.zonedisallow
+  zonelist:
+    description: List all zones where you are allowed.
+    usage: /zonelist
+    permission: remanso.zonelist
   zoneteleport:
-    description: Teleport to a zone.
+    description: Teleport to a zone you're allowed in.
     usage: /zoneteleport <name>
     permission: remanso.zoneteleport
   zonesetteleport:
@@ -62,6 +70,12 @@ permissions:
     default: true
   remanso.zoneallow:
     description: Allows players to use the /zoneallow command.
+    default: true
+  remanso.zonedisallow:
+    description: Allows players to use the /zonedisallow command.
+    default: true
+  remanso.zonelist:
+    description: Allows players to use the /zonelist command.
     default: true
   remanso.zoneteleport:
     description: Allows players to use the /zoneteleport command.

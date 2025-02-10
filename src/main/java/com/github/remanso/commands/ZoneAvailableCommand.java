@@ -44,6 +44,8 @@ public class ZoneAvailableCommand implements CommandExecutor {
             return true;
         }
 
+        zone.setOwner(null); // Clear the current owner
+        zone.getAllowedPlayers().clear(); // Clear the current allowed players
         zone.setAvailable(true);
         plugin.saveZones();
         player.sendMessage("§aThis zone is now available for claiming.");

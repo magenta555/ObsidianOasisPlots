@@ -30,7 +30,7 @@ public class ZoneTeleportCommand implements CommandExecutor, TabCompleter {
 
         Player player = (Player) sender;
         if (!player.hasPermission("remanso.zoneteleport")) {
-            player.sendMessage("You do not have permission to use this command.");
+            player.sendMessage("§dYou do not have permission to use this command.");
             return true;
         }
 
@@ -48,7 +48,7 @@ public class ZoneTeleportCommand implements CommandExecutor, TabCompleter {
         }
 
         if (!player.isOp() && !zone.getOwner().equals(player.getUniqueId()) && !zone.getAllowedPlayers().contains(player.getUniqueId().toString())) {
-            player.sendMessage("You are not allowed to teleport to this zone.");
+            player.sendMessage("§dYou are not allowed to teleport to this zone.");
             return true;
         }
 

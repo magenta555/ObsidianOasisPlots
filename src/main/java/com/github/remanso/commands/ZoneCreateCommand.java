@@ -27,7 +27,7 @@ public class ZoneCreateCommand implements CommandExecutor {
 
         Player player = (Player) sender;
         if (!player.hasPermission("remanso.zonecreate")) {
-            player.sendMessage("You do not have permission to use this command.");
+            player.sendMessage("§dYou do not have permission to use this command.");
             return true;
         }
 
@@ -46,7 +46,7 @@ public class ZoneCreateCommand implements CommandExecutor {
         Location pos2 = player.getPersistentDataContainer().get(LocationTagType.POS2_KEY, LocationTagType.TAG);
 
         if (pos1 == null || pos2 == null) {
-            player.sendMessage("You must select two corners with the Zoning Tool first.");
+            player.sendMessage("§dYou must select two corners with the Zoning Tool first.");
             return true;
         }
 

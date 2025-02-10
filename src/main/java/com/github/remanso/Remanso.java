@@ -31,6 +31,8 @@ public class Remanso extends JavaPlugin {
         getCommand("zoneclaim").setExecutor(new ZoneClaimCommand(this));
         getCommand("zoneinfo").setExecutor(new ZoneInfoCommand(this));
         getCommand("zoneallow").setExecutor(new ZoneAllowCommand(this));
+        getCommand("zonedisallow").setExecutor(new ZoneDisallowCommand(this));
+        getCommand("zonelist").setExecutor(new ZoneListCommand(this));
         getCommand("zoneteleport").setExecutor(new ZoneTeleportCommand(this));
         getCommand("zonesetteleport").setExecutor(new ZoneSetTeleportCommand(this));
 

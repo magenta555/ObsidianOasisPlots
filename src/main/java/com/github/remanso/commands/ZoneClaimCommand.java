@@ -44,13 +44,8 @@ public class ZoneClaimCommand implements CommandExecutor {
             return true;
         }
 
-        if (zone.getOwner() != null) {
-            player.sendMessage("This zone is already claimed.");
-            return true;
-        }
-
         zone.setOwner(player.getUniqueId());
-        zone.setAvailable(false);
+        zone.setAvailable(false); // Set the zone as no longer available
         plugin.saveZones();
 
         player.sendMessage("§aYou have claimed this zone.");

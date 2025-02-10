@@ -1,4 +1,4 @@
-// src/main/java/com/github/remanso/commands/ZoneSetTeleportCommand.java
+// src/main/java/com/github/remanso/commands/ZoneDisallowCommand.java
 package com.github.remanso.commands;
 
 import com.github.remanso.Remanso;
@@ -7,13 +7,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 
-public class ZoneSetTeleportCommand implements CommandExecutor {
+public class ZoneDisallowCommand implements CommandExecutor {
 
     private final Remanso plugin;
 
-    public ZoneSetTeleportCommand(Remanso plugin) {
+    public ZoneDisallowCommand(Remanso plugin) {
         this.plugin = plugin;
     }
 
@@ -25,8 +25,21 @@ public class ZoneSetTeleportCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        if (!player.hasPermission("remanso.zonesetteleport")) {
+        if (!player.hasPermission("remanso.zonedisallow")) {
             player.sendMessage("§dYou do not have permission to use this command.");
+            return true;
+        }
+
+        if (args.length != 1) {
+            player.sendMessage("Usage: /zonedisallow <player>");
+            return true;
+        }
+
+        String targetPlayerName = args[0];
+        OfflinePlayer targetPlayer = plugin.getServer().getOfflinePlayer(targetPlayerName);
+
+        if (targetPlayer == null || !targetPlayer.hasPlayedBefore()) {
+            player.sendMessage("Player '" + targetPlayerName + "' not found.");
             return true;
         }
 
@@ -45,11 +58,15 @@ public class ZoneSetTeleportCommand implements CommandExecutor {
             return true;
         }
 
-        Location playerLocation = player.getLocation();
-        zone.setTeleportLocation(playerLocation);
-        plugin.saveZones();
+        String targetPlayerUUID = targetPlayer.getUniqueId().toString();
+        if (!zone.getAllowedPlayers().contains(targetPlayerUUID)) {
+            player.sendMessage("Player '" + targetPlayerName + "' is not allowed in this zone.");
+            return true;
+        }
 
-        player.sendMessage("§aTeleport location for this zone has been set.");
+        zone.getAllowedPlayers().remove(targetPlayerUUID);
+        plugin.saveZones();
+        player.sendMessage("§aPlayer '" + targetPlayerName + "' is no longer allowed in this zone.");
         return true;
     }
 }
