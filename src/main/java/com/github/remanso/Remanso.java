@@ -40,7 +40,7 @@ public class Remanso extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new BlockInteractListener(this), this);
         getServer().getPluginManager().registerEvents(new ZoneToolListener(), this);
-        getServer().getPluginManager().registerEvents(new EnterExitListener(this), this);
+        getServer().getPluginManager().registerEvents(new ZoneEnterListener(this), this);
 
 
         getLogger().info("Remanso plugin enabled!");

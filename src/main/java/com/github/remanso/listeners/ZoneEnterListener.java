@@ -14,12 +14,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class EnterExitListener implements Listener {
+public class ZoneEnterListener implements Listener {
 
     private final Remanso plugin;
     private final Map<UUID, String> playerLastZone = new HashMap<>();
 
-    public EnterExitListener(Remanso plugin) {
+    public ZoneEnterListener(Remanso plugin) {
         this.plugin = plugin;
     }
 
@@ -44,7 +44,7 @@ public class EnterExitListener implements Listener {
 
         // Check if player entered a new zone
         for (Zone zone : plugin.getZones().values()) {
-            if (zone.contains(to) && !zone.contains(from)) {
+            if (zone.contains(to)) {
                 enteredZone = zone;
                 enteredZoneName = zone.getName();
                 break;
@@ -53,7 +53,7 @@ public class EnterExitListener implements Listener {
 
         // Check if player exited a zone
         for (Zone zone : plugin.getZones().values()) {
-            if (!zone.contains(to) && zone.contains(from)) {
+            if (zone.contains(from)) {
                 exitedZone = zone;
                 exitedZoneName = zone.getName();
                 break;
@@ -63,7 +63,6 @@ public class EnterExitListener implements Listener {
         String lastZone = playerLastZone.get(playerId);
 
         if (exitedZone != null && (lastZone == null || !lastZone.equals(exitedZoneName))) {
-            player.sendMessage(ChatColor.LIGHT_PURPLE + "You are now exiting zone: " + exitedZoneName);
             playerLastZone.put(playerId, null);
         } else if (exitedZone == null && lastZone != null) {
             // Player exited all zones
