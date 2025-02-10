@@ -2,9 +2,8 @@
 package com.github.remanso;
 
 import com.github.remanso.commands.*;
-import com.github.remanso.listeners.BlockInteractListener;
-import com.github.remanso.listeners.ZoneToolListener;
-import com.github.remanso.model.Zone;
+import com.github.remanso.listeners.*;
+import com.github.remanso.model.*;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.ConfigurationSection;
@@ -41,6 +40,8 @@ public class Remanso extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new BlockInteractListener(this), this);
         getServer().getPluginManager().registerEvents(new ZoneToolListener(), this);
+        getServer().getPluginManager().registerEvents(new EnterExitListener(null), this);
+
 
         getLogger().info("Remanso plugin enabled!");
     }
