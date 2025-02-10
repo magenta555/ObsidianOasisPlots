@@ -10,13 +10,16 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.Location;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap; // Changed from HashMap to LinkedHashMap
 import java.util.Map;
 import java.util.UUID;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Remanso extends JavaPlugin {
 
-    private final Map<String, Zone> zones = new HashMap<>();
+    private final Map<String, Zone> zones = new LinkedHashMap<>(); // Use LinkedHashMap to preserve order
     private FileConfiguration zonesConfig;
 
     @Override
@@ -56,10 +59,13 @@ public class Remanso extends JavaPlugin {
         return zonesConfig;
     }
 
-    public void loadZones() {
+   public void loadZones() {
         ConfigurationSection zonesSection = zonesConfig.getConfigurationSection("zones");
         if (zonesSection != null) {
-            for (String zoneName : zonesSection.getKeys(false)) {
+            List<String> zoneNames = new ArrayList<>(zonesSection.getKeys(false));
+            Collections.reverse(zoneNames); // Load in reverse order
+
+            for (String zoneName : zoneNames) {
                 ConfigurationSection zoneSection = zonesSection.getConfigurationSection(zoneName);
                 if (zoneSection != null) {
                     Zone zone = new Zone();
@@ -92,11 +98,18 @@ public class Remanso extends JavaPlugin {
         }
     }
 
+
     public void saveZones() {
+        // Clear existing zones in config
         zonesConfig.set("zones", null);
-        for (Map.Entry<String, Zone> entry : zones.entrySet()) {
-            String zoneName = entry.getKey();
-            Zone zone = entry.getValue();
+
+        // Create a list of zone names in reverse order of creation
+        List<String> zoneNames = new ArrayList<>(zones.keySet());
+        Collections.reverse(zoneNames);
+
+        // Save zones in the reversed order
+        for (String zoneName : zoneNames) {
+            Zone zone = zones.get(zoneName);
             String path = "zones." + zoneName + ".";
             zonesConfig.set(path + "world", zone.getWorldName());
             zonesConfig.set(path + "minX", zone.getMinX());

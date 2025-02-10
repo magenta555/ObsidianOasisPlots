@@ -7,6 +7,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.LinkedHashMap;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -73,7 +76,13 @@ public class ZoneCreateCommand implements CommandExecutor {
         // Set default teleport location to pos1
         zone.setTeleportLocation(pos1);
 
-        plugin.getZones().put(zoneName, zone);
+        // Add the new zone to the beginning of the LinkedHashMap
+        LinkedHashMap<String, Zone> tempZones = new LinkedHashMap<>();
+        tempZones.put(zoneName, zone);
+        tempZones.putAll(plugin.getZones());
+        plugin.getZones().clear();
+        plugin.getZones().putAll(tempZones);
+
         plugin.saveZones();
 
         player.sendMessage("§aZone '" + zoneName + "' created successfully.");
