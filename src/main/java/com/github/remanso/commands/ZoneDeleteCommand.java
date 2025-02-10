@@ -39,6 +39,22 @@ public class ZoneDeleteCommand implements CommandExecutor {
             return true;
         }
 
+        // Check for OP player bypass
+        if (player.isOp()) {
+            // OP players can delete any zone, even without an owner
+            plugin.getZones().remove(zone.getName());
+            plugin.saveZones();
+            player.sendMessage("§dZone '" + zone.getName() + "' deleted successfully.");
+            return true;
+        }
+
+        //Normal flow
+        if (zone.getOwner() == null) {
+            player.sendMessage("§dThis zone has no owner and cannot be deleted by players. OP players can delete it.");
+            return true;
+        }
+
+
         if (!zone.getOwner().equals(player.getUniqueId())) {
             player.sendMessage("§dYou do not own this zone.");
             return true;
@@ -46,7 +62,7 @@ public class ZoneDeleteCommand implements CommandExecutor {
 
         plugin.getZones().remove(zone.getName());
         plugin.saveZones();
-        player.sendMessage("§aZone deleted successfully.");
+        player.sendMessage("§aZone '" + zone.getName() + "' deleted successfully.");
         return true;
     }
 }
